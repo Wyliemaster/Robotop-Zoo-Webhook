@@ -1,0 +1,9 @@
+{
+    "zoo": {
+        "id": "Your Discord User ID",
+        "token": "This is your Zoo Token"
+    },
+    "discord": {
+        "webhook_URL": "The Webhook where the data will be sent"
+    }
+}
