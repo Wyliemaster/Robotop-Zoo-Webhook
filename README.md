@@ -23,3 +23,7 @@ Enter the required Data into `data.json` and then host the bot somewhere
 > create a webhook in the integrations tab of channel settings
 
 ![webhook](https://media.discordapp.net/attachments/934924967731146792/934928527806050364/unknown.png)
+
+### Example
+
+![example](https://media.discordapp.net/attachments/934924967731146792/934935687109672960/unknown.png)
