@@ -1,0 +1,16 @@
+{
+  "name": "zoo-secret-info-collector",
+  "version": "1.0.0",
+  "description": "Quick program to view secret info given by the API Key relic",
+  "main": "src/index.js",
+  "scripts": {
+    "prepare": "npm i axios -g"
+  },
+  "author": "Wylie",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.25.0",
+    "discord.js": "^13.6.0",
+    "xmlhttprequest": "^1.8.0"
+  }
+}
