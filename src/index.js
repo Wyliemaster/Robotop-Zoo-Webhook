@@ -67,7 +67,7 @@ const interval = setInterval(async function() {
     }
 
     if(err) clearInterval(interval);
-}, 5000)
+}, 600000)
 
 
 
