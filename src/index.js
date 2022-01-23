@@ -62,7 +62,7 @@ const interval = setInterval(async function() {
             console.log("[ROBOTOP ERROR] API Key Relic not equipeped")
             break;
         case "kERR_FAILEDREQUEST":
-            console.log("[ROBOTOP ERROR] API Key Relic not equipeped")
+            console.log("[ROBOTOP ERROR] Request Failed - make sure the contents of data.json are correct")
             break
     }
 
