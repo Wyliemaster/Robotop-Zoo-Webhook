@@ -2,10 +2,9 @@ const axios = require('axios');
 const config = require('../data.json')
 
 class GDRequests {
-    constructor(id, token)
+    constructor(id)
     {
         this.id = id;
-        this.token = token;
         this.last_ping = { timestamp: 0, cooldown_ended: true };
     }
 
@@ -16,7 +15,7 @@ class GDRequests {
 
     async fetch_secret_info()
     {
-        let response = await this.get_request(`https://robotop.xyz/api/zoo/${this.id}`, {}, {cookie: this.token})
+        let response = await this.get_request(`https://robotop.xyz/api/zoo/${this.id}`, {}, {})
         if(response.data.equippedRelic == "API Key")
             return response.data.secretInfo
         return "kENoAPIKey"
@@ -56,7 +55,7 @@ class GDRequests {
     }
 }
 
-let req = new GDRequests(config.zoo.id, config.zoo.token)
+let req = new GDRequests(config.zoo.id)
 
 console.log(`[${Date.now()}] Starting Loop`)
 
