@@ -6,6 +6,7 @@ class GDRequests {
     {
         this.id = id;
         this.token = token;
+        this.last_ping = { timestamp: 0, cooldown_ended: true };
     }
 
     async get_request(endpoint, params, headers)
@@ -18,14 +19,15 @@ class GDRequests {
         let response = await this.get_request(`https://robotop.xyz/api/zoo/${this.id}`, {}, {cookie: this.token})
         if(response.data.equippedRelic == "API Key")
             return response.data.secretInfo
-        return "kERR_NOAPIKEY"
+        return "kENoAPIKey"
     }
 
     async check_info()
     {
         console.log(`[${Date.now()}] Checking Secret Info`)
         let message = ''
-        let data = await this.fetch_secret_info() || "kERR_FAILEDREQUEST"
+        let err = null
+        let data = await this.fetch_secret_info() || "kESecretInfoFailed"
 
 
         if(typeof data === 'string' || data instanceof String) return data;
@@ -34,40 +36,50 @@ class GDRequests {
         if(data.rescueCooldown < time) message += "A new rescue is available\n"
         if(data.questEnd < time) message += "A quest has finished\n"
 
-        if(message != ''){
+        if(message != '' && this.last_ping.cooldown_ended){
             message += `<@!${config.zoo.id}>`
-            await this.send_webhook(message)
+            err = await this.send_webhook(message) || null
         }
-        return null
+        return err
     }
 
     async send_webhook(content)
     {
-        axios.post(config.discord.webhook_URL, {
+        let req = await axios.post(config.discord.webhook_URL, {
             "content": content
         }, {
             "content-type": "application/json"
         });
+        this.last_ping.timestamp = Date.now();
+        this.last_ping.cooldown_ended = false;
+        return req.status == 204 ? null : "kEWebhookFailed"
     }
 }
 
-
 let req = new GDRequests(config.zoo.id, config.zoo.token)
+
 console.log(`[${Date.now()}] Starting Loop`)
+
 const interval = setInterval(async function() { 
+    if(Date.now() - req.last_ping.timestamp > 3600000) req.last_ping.cooldown_ended = true
+
+
     let err = await req.check_info() 
     switch(err)
     {
-        case "kERR_NOAPIKEY":
-            console.log("[ROBOTOP ERROR] API Key Relic not equipeped")
+        case "kENoAPIKey":
+            console.log("[ROBOTOP ERROR] API Key Relic not equipped");
             break;
-        case "kERR_FAILEDREQUEST":
-            console.log("[ROBOTOP ERROR] Request Failed - make sure the contents of data.json are correct")
-            break
+        case "kESecretInfoFailed":
+            console.log("[ROBOTOP ERROR] Request Failed - make sure the contents of data.json are correct");
+            break;
+        case "kEWebhookFailed":
+            console.log("[DISCORD ERROR] Unable to send webhook");
+            break;
     }
 
     if(err) clearInterval(interval);
-}, 600000)
+}, 300000);
 
 
 
