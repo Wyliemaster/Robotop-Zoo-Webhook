@@ -61,8 +61,8 @@ let req = new GDRequests(config.zoo.id, config.zoo.token)
 console.log(`[${Date.now()}] Starting Loop`)
 
 const interval = setInterval(async function() { 
+    // Makes sure you don't get spam pinged every 10 minutes
     if(Date.now() - req.last_ping.timestamp > 3600000) req.last_ping.cooldown_ended = true
-
 
     let err = await req.check_info() 
     switch(err)
@@ -80,9 +80,3 @@ const interval = setInterval(async function() {
 
     if(err) clearInterval(interval);
 }, 300000);
-
-
-
-
-
-
